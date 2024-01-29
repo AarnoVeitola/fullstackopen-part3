@@ -1,1 +1,1 @@
-README
+A repository for the exercises of **fullstackopen** part 3. 
