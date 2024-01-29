@@ -1,7 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+morgan.token('body', (req, res) => {
+    return JSON.stringify(req.body)
+})
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
     {
@@ -59,10 +65,13 @@ app.post('/api/persons', (request, response) => {
             error: 'name must be unique'
         })
     }
+    const newPerson = {
+        ...person,
+        id: id
+    }
 
-    person.id = id
-    persons = persons.concat(person)
-    response.json(person)
+    persons = persons.concat(newPerson)
+    response.json(newPerson)
 })
 
 app.get('/api/persons/:id', (request, response) => {
