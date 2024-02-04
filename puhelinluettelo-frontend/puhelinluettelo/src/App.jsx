@@ -54,12 +54,17 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           console.log("person added", returnedPerson)
           setSuccessMsg(`Added ${returnedPerson.name}`)
-      })
+        })
+        .catch(error => {
+          console.log(error.response.data)
+          setErrorMsg(error.response.data.error)
+        })
     }
     setNewName("")
     setNewNumber("")
     setTimeout(() => {
       setSuccessMsg(null)
+      setErrorMsg(null)
     }, 5000)
   }
 
