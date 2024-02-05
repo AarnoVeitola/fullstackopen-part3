@@ -4,7 +4,7 @@ const cors = require('cors')
 const app = express()
 const Person = require('./models/person')
 
-morgan.token('body', (req, res) => {
+morgan.token('body', req => {
     return JSON.stringify(req.body)
 })
 
@@ -15,10 +15,11 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 
 app.get('/api/persons', (request, response, next) => {
-    Person.find({}).then(result => {
-        response.json(result)
-    })
-    .catch(error => next(error))
+    Person
+        .find({}).then(result => {
+            response.json(result)
+        })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
@@ -41,10 +42,11 @@ app.post('/api/persons', (request, response, next) => {
         number: body.number,
     })
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
-    .catch(error => next(error))
+    person
+        .save().then(savedPerson => {
+            response.json(savedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -60,12 +62,13 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    Person.findByIdAndDelete(request.params.id)
-      .then(result => {
-        response.json(result).status(204)
-      })
-      .catch(error => next(error))
-  })
+    Person
+        .findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.json(result).status(204)
+        })
+        .catch(error => next(error))
+})
 
 app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
@@ -75,14 +78,15 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number,
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    Person
+        .findByIdAndUpdate(request.params.id, person, { new: true })
         .then(updatedPerson => {
-        response.json(updatedPerson)
+            response.json(updatedPerson)
         })
         .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     const getCurrentTime = () => {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -101,13 +105,14 @@ app.get('/info', (request, response) => {
       
         return `${dayOfWeek} ${month} ${dayOfMonth} ${year} ${hours}:${minutes}:${seconds} GMT${timeZone} (${timeZoneName})`
     }
-    Person.find({}).then(result => {
-        response.send(`
-        <p>Phonebook has info for ${result.length} people</p>
-        <p>${getCurrentTime()}</p>
-        `)
-    })
-    .catch(error => next(error))
+    Person
+        .find({}).then(result => {
+            response.send(`
+            <p>Phonebook has info for ${result.length} people</p>
+            <p>${getCurrentTime()}</p>
+            `)
+        })
+        .catch(error => next(error))
     
 })
 
